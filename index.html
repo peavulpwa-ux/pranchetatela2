@@ -1,0 +1,101 @@
+<!-- Tela de Login (inicialmente visível) -->
+<div id="tela-login" class="container">
+  <header>
+    <h1><i class="fas fa-user-lock"></i> PENSO - Login</h1>
+  </header>
+  
+  <div style="background:white;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);width:90%;max-width:400px">
+    <input type="text" id="matricula" placeholder="Matrícula" class="input-login" maxlength="6">
+    <input type="password" id="senha" placeholder="Senha" class="input-login">
+    <button id="btn-entrar" class="button" style="margin-top:15px;width:100%">
+      <i class="fas fa-sign-in-alt"></i> ENTRAR
+    </button>
+    <p id="msg-erro" style="color:red;margin-top:10px;display:none"></p>
+  </div>
+</div>
+
+<!-- Tela principal (inicialmente escondida) -->
+<div id="tela-principal" class="container" style="display:none">
+  <!-- aqui fica todo o conteúdo atual do seu index.html -->
+</div>
+
+<style>
+.input-login {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+</style>
+
+<script>
+const URL_API = "https://script.google.com/macros/s/AKfycby-mmtKcg8sqUe4zLofRQw3ppXDqUJjyX1v6JNq3TevH0_JXimD6SKDdDauiSmjyE1Q/exec";
+
+document.getElementById('btn-entrar').addEventListener('click', async () => {
+  const matricula = document.getElementById('matricula').value.trim();
+  const senha = document.getElementById('senha').value;
+  const msg = document.getElementById('msg-erro');
+  
+  if (!matricula || !senha) {
+    msg.textContent = "Preencha matrícula e senha";
+    msg.style.display = "block";
+    return;
+  }
+  
+  msg.style.display = "none";
+  document.getElementById('btn-entrar').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+  
+  try {
+    const resposta = await fetch(URL_API, {
+      method: "POST",
+      body: JSON.stringify({ matricula, senha }),
+      headers: { "Content-Type": "text/plain" },
+      mode: "no-cors"
+    });
+    
+    // Como usamos no-cors, não conseguimos ler o body → workaround simples
+    // Vamos usar um truque: redirecionar com parâmetro na URL (método mais confiável)
+    // Melhor solução: mude para modo "cors" no deploy e use o código abaixo:
+    
+    // Substitua todo o fetch por este (depois de mudar o deploy para "Anyone" com CORS):
+    const raw = await fetch(URL_API, {
+      method: "POST",
+      body: JSON.stringify({ matricula, senha })
+    });
+    const resultado = await raw.json();
+    
+    if (resultado.sucesso) {
+      localStorage.setItem("usuarioPENSO", JSON.stringify(resultado.usuario));
+      document.getElementById('tela-login').style.display = "none";
+      document.getElementById('tela-principal').style.display = "flex";
+      
+      // Opcional: saudação personalizada
+      document.querySelector('header h1').innerHTML = 
+        `<i class="fas fa-clipboard-list"></i> Olá, ${resultado.usuario.nome.split(" ")[0]}!`;
+        
+      // Aqui você pode habilitar botões conforme o nível
+      if (resultado.usuario.nivel === "admin" || resultado.usuario.nivel === "inspetor") {
+        document.getElementById('btn-segunda-tela').classList.remove('disabled');
+        document.getElementById('btn-segunda-tela').href = "inspetores.html"; // página futura
+      }
+    } else {
+      msg.textContent = resultado.erro || "Login falhou";
+      msg.style.display = "block";
+    }
+  } catch (e) {
+    msg.textContent = "Erro de conexão. Tente novamente.";
+    msg.style.display = "block";
+  } finally {
+    document.getElementById('btn-entrar').innerHTML = '<i class="fas fa-sign-in-alt"></i> ENTRAR';
+  }
+});
+
+// Verifica se já está logado ao abrir o app
+if (localStorage.getItem("usuarioPENSO")) {
+  document.getElementById('tela-login').style.display = "none";
+  document.getElementById('tela-principal').style.display = "flex";
+}
+</script>

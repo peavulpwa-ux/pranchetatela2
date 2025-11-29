@@ -1,101 +1,235 @@
-<!-- Tela de Login (inicialmente visível) -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PENSO - Prancheta eletrônica</title>
+    <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .input-login {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+        .input-login:focus {
+            border-color: #d11a2d;
+            outline: none;
+        }
+        #btn-logout {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #666;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ====================== TELA DE LOGIN ====================== -->
 <div id="tela-login" class="container">
-  <header>
-    <h1><i class="fas fa-user-lock"></i> PENSO - Login</h1>
-  </header>
-  
-  <div style="background:white;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);width:90%;max-width:400px">
-    <input type="text" id="matricula" placeholder="Matrícula" class="input-login" maxlength="6">
-    <input type="password" id="senha" placeholder="Senha" class="input-login">
-    <button id="btn-entrar" class="button" style="margin-top:15px;width:100%">
-      <i class="fas fa-sign-in-alt"></i> ENTRAR
+    <header>
+        <h1><i class="fas fa-user-lock"></i> PENSO - Login Urubupungá</h1>
+    </header>
+    <div style="background:white; padding:25px; border-radius:12px; box-shadow:0 0 4px 20px rgba(0,0,0,0.2); width:90%; max-width:420px; text-align:center;">
+        <input type="text" id="matricula" class="input-login" placeholder="Matrícula (ex: 1849)" maxlength="10" autocomplete="off">
+        <input type="password" id="senha" class="input-login" placeholder="Senha" autocomplete="off">
+        <button id="btn-entrar" class="button" style="width:100%; margin-top:15px;">
+            <i class="fas fa-sign-in-alt"></i> ENTRAR
+        </button>
+        <p id="msg-erro" style="color:#d11a2d; margin-top:15px; display:none; font-weight:bold;"></p>
+    </div>
+</div>
+
+<!-- ====================== PAINEL PRINCIPAL (escondido no início) ====================== -->
+<div id="tela-principal" class="container" style="display:none;">
+    <button id="btn-logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Sair
     </button>
-    <p id="msg-erro" style="color:red;margin-top:10px;display:none"></p>
-  </div>
+
+    <header>
+        <h1><i class="fas fa-clipboard-list"></i> Painel de Acessos</h1>
+        <p style="margin-top:8px; font-size:18px; color:#333;" id="saudacao"></p>
+    </header>
+
+    <a class="button" href="https://gruponso-my.sharepoint.com/personal/cristiano_santos_urubupunga_com_br/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fcristiano%5Fsantos%5Furubupunga%5Fcom%5Fbr%2FDocuments%2FRelat%C3%B3rios%20de%20ponto%5Fexcel%2FREL%5FFISCAIS%5FAVUL%28EM%20USO%29&ga=1">
+        <i class="fas fa-file-excel"></i> IR PARA RELATÓRIOS DE FISCAL
+    </a>
+
+    <a class="button" id="btn-ideias" href="https://forms.office.com/r/DFBt9eC2pX">
+        <i class="fas fa-lightbulb"></i> USINA DE IDEIAS
+        <span class="tooltip">Registre sua ideia e concorra a prêmios</span>
+    </a>
+
+    <a class="button" id="btn-clandestinos-rto" href="#">
+        <i class="fas fa-ban"></i> CLANDESTINOS E RTO
+    </a>
+
+    <a class="button" id="btn-inspecoes-5s" href="#">
+        <i class="fas fa-clipboard-check"></i> INSPEÇÕES DE 5S
+    </a>
+
+    <a class="button disabled" href="#">
+        <i class="fas fa-bullhorn"></i> COMUNICAÇÃO INTERNA (EM CONSTRUÇÃO)
+    </a>
+
+    <a class="button disabled" id="btn-segunda-tela" href="#">
+        <i class="fas fa-lock"></i> INSPETORES>>>>
+    </a>
 </div>
 
-<!-- Tela principal (inicialmente escondida) -->
-<div id="tela-principal" class="container" style="display:none">
-  <!-- aqui fica todo o conteúdo atual do seu index.html -->
+<!-- ====================== MODAIS (mantidos iguais) ====================== -->
+<div id="modal-clandestinos-rto" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('modal-clandestinos-rto')">&times;</span>
+        <a class="button" href="https://forms.office.com/r/AKQCs8XCiF"><i class="fas fa-file-alt"></i> RELATÓRIO DE RTO</a>
+        <a class="button" href="https://forms.office.com/r/v4BMhNHbSR"><i class="fas fa-ban"></i> RUA MELVIN JONES - CLANDESTINOS</a>
+        <a class="button" href="https://forms.office.com/r/JF8tPFysX6"><i class="fas fa-ban"></i> CLANDESTINOS - CAJAMAR</a>
+    </div>
 </div>
 
-<style>
-.input-login {
-  width: 100%;
-  padding: 15px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 18px;
-  box-sizing: border-box;
-}
-</style>
+<div id="modal-inspecoes-5s" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('modal-inspecoes-5s')">&times;</span>
+        <a class="button" id="btn-osasco" href="https://forms.office.com/r/bkeF1EwmNC"><i class="fas fa-clipboard-check"></i> 5S - FROTA DE OSASCO</a>
+        <a class="button" id="btn-santana" href="https://forms.office.com/r/dhibquxks5"><i class="fas fa-clipboard-check"></i> 5S - FROTA SANTANA DE PARNAÍBA</a>
+    </div>
+</div>
 
 <script>
-const URL_API = "https://script.google.com/macros/s/AKfycby-mmtKcg8sqUe4zLofRQw3ppXDqUJjyX1v6JNq3TevH0_JXimD6SKDdDauiSmjyE1Q/exec";
+// <<< COLE AQUI A URL DO SEU WEB APP (Apps Script) >>>
+const URL_API = "https://script.google.com/macros/s/SEU_ID_AQUI/exec";   // <<< SUBSTITUA!
 
-document.getElementById('btn-entrar').addEventListener('click', async () => {
-  const matricula = document.getElementById('matricula').value.trim();
-  const senha = document.getElementById('senha').value;
-  const msg = document.getElementById('msg-erro');
-  
-  if (!matricula || !senha) {
-    msg.textContent = "Preencha matrícula e senha";
-    msg.style.display = "block";
-    return;
-  }
-  
-  msg.style.display = "none";
-  document.getElementById('btn-entrar').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-  
-  try {
-    const resposta = await fetch(URL_API, {
-      method: "POST",
-      body: JSON.stringify({ matricula, senha }),
-      headers: { "Content-Type": "text/plain" },
-      mode: "no-cors"
-    });
-    
-    // Como usamos no-cors, não conseguimos ler o body → workaround simples
-    // Vamos usar um truque: redirecionar com parâmetro na URL (método mais confiável)
-    // Melhor solução: mude para modo "cors" no deploy e use o código abaixo:
-    
-    // Substitua todo o fetch por este (depois de mudar o deploy para "Anyone" com CORS):
-    const raw = await fetch(URL_API, {
-      method: "POST",
-      body: JSON.stringify({ matricula, senha })
-    });
-    const resultado = await raw.json();
-    
-    if (resultado.sucesso) {
-      localStorage.setItem("usuarioPENSO", JSON.stringify(resultado.usuario));
-      document.getElementById('tela-login').style.display = "none";
-      document.getElementById('tela-principal').style.display = "flex";
-      
-      // Opcional: saudação personalizada
-      document.querySelector('header h1').innerHTML = 
-        `<i class="fas fa-clipboard-list"></i> Olá, ${resultado.usuario.nome.split(" ")[0]}!`;
-        
-      // Aqui você pode habilitar botões conforme o nível
-      if (resultado.usuario.nivel === "admin" || resultado.usuario.nivel === "inspetor") {
-        document.getElementById('btn-segunda-tela').classList.remove('disabled');
-        document.getElementById('btn-segunda-tela').href = "inspetores.html"; // página futura
-      }
-    } else {
-      msg.textContent = resultado.erro || "Login falhou";
-      msg.style.display = "block";
+// Login
+document.getElementById("btn-entrar").addEventListener("click", async () => {
+    const matricula = document.getElementById("matricula").value.trim();
+    const senha     = document.getElementById("senha").value;
+    const msg       = document.getElementById("msg-erro");
+    const btn       = document.getElementById("btn-entrar");
+
+    if (!matricula || !senha) {
+        msg.textContent = "Preencha matrícula e senha";
+        msg.style.display = "block";
+        return;
     }
-  } catch (e) {
-    msg.textContent = "Erro de conexão. Tente novamente.";
-    msg.style.display = "block";
-  } finally {
-    document.getElementById('btn-entrar').innerHTML = '<i class="fas fa-sign-in-alt"></i> ENTRAR';
-  }
+
+    msg.style.display = "none";
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+
+    try {
+        const resp = await fetch(URL_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ matricula, senha })
+        });
+
+        const data = await resp.json();
+
+        if (data.sucesso) {
+            localStorage.setItem("usuarioPENSO", JSON.stringify(data.usuario));
+
+            document.getElementById("tela-login").style.display = "none";
+            document.getElementById("tela-principal").style.display = "flex";
+
+            document.getElementById("saudacao").textContent = 
+                `Olá, ${data.usuario.apelido || data.usuario.nome.split(" ")[0]}!`;
+
+            // Libera botão de inspetores se for admin ou inspetor
+            if (data.usuario.nivel === "admin" || data.usuario.nivel === "inspetor") {
+                const btn = document.getElementById("btn-segunda-tela");
+                btn.classList.remove("disabled");
+                btn.href = "inspetores.html"; // ou qualquer página que você criar depois
+            }
+        } else {
+            msg.textContent = data.erro || "Login inválido";
+            msg.style.display = "block";
+        }
+    } catch (e) {
+        msg.textContent = "Erro de conexão. Verifique sua internet.";
+        msg.style.display = "block";
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ENTRAR';
+    }
 });
 
-// Verifica se já está logado ao abrir o app
-if (localStorage.getItem("usuarioPENSO")) {
-  document.getElementById('tela-login').style.display = "none";
-  document.getElementById('tela-principal').style.display = "flex";
+// Auto-login se já estiver logado
+window.addEventListener("load", () => {
+    const usuario = localStorage.getItem("usuarioPENSO");
+    if (usuario) {
+        const u = JSON.parse(usuario);
+        document.getElementById("tela-login").style.display = "none";
+        document.getElementById("tela-principal").style.display = "flex";
+        document.getElementById("saudacao").textContent = 
+            `Olá, ${u.apelido || u.nome.split(" ")[0]}!`;
+
+        if (u.nivel === "admin" || u.nivel === "inspetor") {
+            const btn = document.getElementById("btn-segunda-tela");
+            btn.classList.remove("disabled");
+            btn.href = "inspetores.html";
+        }
+    }
+});
+
+// Logout
+function logout() {
+    localStorage.removeItem("usuarioPENSO");
+    document.getElementById("tela-login").style.display = "flex";
+    document.getElementById("tela-principal").style.display = "none";
+    document.getElementById("matricula").value = "";
+    document.getElementById("senha").value = "";
 }
+
+// ====================== CÓDIGO ORIGINAL DOS MODAIS E BOTÕES ======================
+const disableDates = {
+    'btn-osasco': new Date('2025-11-15'),
+    'btn-santana': new Date('2026-02-01')
+};
+const now = new Date();
+for (const [id, date] of Object.entries(disableDates)) {
+    const btn = document.getElementById(id);
+    if (btn && now < date) {
+        btn.classList.add('disabled');
+        btn.setAttribute('href', '#');
+        btn.setAttribute('title', `Disponível após ${date.toLocaleDateString()}`);
+    }
+}
+
+// Tooltip no celular
+const tooltipBtn = document.getElementById('btn-ideias');
+if (tooltipBtn) {
+    tooltipBtn.addEventListener('touchstart', () => {
+        tooltipBtn.classList.add('touch');
+        setTimeout(() => tooltipBtn.classList.remove('touch'), 3000);
+    });
+}
+
+// Modais
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+document.getElementById('btn-clandestinos-rto')?.addEventListener('click', e => { e.preventDefault(); openModal('modal-clandestinos-rto'); });
+document.getElementById('btn-inspecoes-5s')?.addEventListener('click', e => { e.preventDefault(); openModal('modal-inspecoes-5s'); });
+
+window.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+});
 </script>
+
+</body>
+</html>

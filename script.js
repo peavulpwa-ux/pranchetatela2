@@ -1,4 +1,4 @@
-const URL_API = "https://script.google.com/macros/s/SEU_ID_AQUI/exec";  // <-- Cole aqui!
+const URL_API = "https://script.google.com/macros/s/AKfycbxSEPc5LptXEszW6eJVpsa5PL0MOdvWISFwI1IeO0UwpvFbJ_VsCbulrAx18hWK_Sd2/exec";  // <-- Cole aqui!
 
 // Evento do botão entrar (adicione no seu script)
 document.getElementById('btn-entrar').addEventListener('click', async () => {
